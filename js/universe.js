@@ -2,7 +2,7 @@ $(function () {
   var camera, scene, renderer, controls, ray, stats,
 	  time = Date.now(),
 	  objects = [],
-	  cubes = [],
+	  stars = [],
     frameCount = 0,
     COLORS = [0xCC0000, 0x00CC00, 0x0000CC];
 
@@ -95,7 +95,28 @@ $(function () {
     stats.domElement.style.top = '0px';
     
     document.body.appendChild( stats.domElement );
-
+    
+    // create field of stars
+    var width = window.innerWidth,
+      height = window.innerHeight;
+      
+    for (var i = 0; i < 100; i++) {
+      var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
+		  var starRadius = Math.floor(Math.random() * (100 - 50) + 50);
+      var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
+      var star = new THREE.Mesh(starGeometry, starMaterial);
+      
+      var maxZ = camera.position.x + (width * 4),
+        minZ = camera.position.x - (width * 4);
+      
+      star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+      star.position.y = height / 8;
+      star.position.z = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+  
+      scene.add(star);
+      stars.push(star);
+    }
+    
     // player's triangle
     var geom = new THREE.Geometry();
     var v1 = new THREE.Vector3(0,0,0);
@@ -116,27 +137,6 @@ $(function () {
     
     scene.add(triangle);
 
-    // generate field of cubes
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    
-    for (var i = 0; i < 1000; i++) {
-      var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-      var cubeGeometry = new THREE.CubeGeometry(64, 64, 64);
-      var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-      
-      var maxX = camera.position.x + (width * 4),
-        minX = camera.position.x - (width * 4);
-      
-      cube.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
-      
-      cube.position.y = height / 8;
-      cube.position.z = Math.floor(Math.random() * (maxX - minX) + minX);
-  
-      scene.add(cube);
-      cubes.push(cube);  
-    }
-    
 	  controls = new THREE.PointerLockControls( camera );
 		scene.add( controls.getObject() );
 
@@ -171,6 +171,37 @@ $(function () {
 				controls.isOnObject( true );
 			}
 		}
+		
+		// update field of stars
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    
+		for (var i = 0; i < stars.length; i++) {
+		  var star = stars[i];
+		  
+		  if (star.position.z >= 0) {
+	      stars.splice(i, 1);
+	      
+	      var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
+  		  var starRadius = Math.floor(Math.random() * (100 - 50) + 50);
+        var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
+        star = new THREE.Mesh(starGeometry, starMaterial);
+        
+        var maxZ = camera.position.x + (width * 4),
+          minZ = camera.position.x - (width * 4);
+        
+        star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+        star.position.y = height / 8;
+        star.position.z = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+    
+        scene.add(star);
+        stars.push(star);
+	    }
+	    
+      star.position.z += 10;	    
+		}
+		
+		
 		
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
