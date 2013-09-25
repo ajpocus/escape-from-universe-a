@@ -1,5 +1,5 @@
 $(function () {
-  var camera, scene, renderer, controls, ray,
+  var camera, scene, renderer, controls, ray, stats,
 	  time = Date.now(),
 	  objects = [],
 	  cubes = [],
@@ -79,11 +79,22 @@ $(function () {
 	function init() {
 		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 		scene = new THREE.Scene();
-
+    scene.fog = new THREE.Fog(0xFFFFFF, 100, 1000)
+    
     // create a point light
     var light = new THREE.AmbientLight(0x404040);
     light.position.set(0, 50, 130);
     scene.add(light);
+
+    stats = new Stats();
+    stats.setMode(0); // 0: fps, 1: ms
+    
+    // Align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.left = '0px';
+    stats.domElement.style.top = '0px';
+    
+    document.body.appendChild( stats.domElement );
 
     // player's triangle
     var geom = new THREE.Geometry();
@@ -105,7 +116,28 @@ $(function () {
     
     scene.add(triangle);
 
-		controls = new THREE.PointerLockControls( camera );
+    // generate field of cubes
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    
+    for (var i = 0; i < 1000; i++) {
+      var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
+      var cubeGeometry = new THREE.CubeGeometry(64, 64, 64);
+      var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+      
+      var maxX = camera.position.x + (width * 4),
+        minX = camera.position.x - (width * 4);
+      
+      cube.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
+      
+      cube.position.y = height / 8;
+      cube.position.z = Math.floor(Math.random() * (maxX - minX) + minX);
+  
+      scene.add(cube);
+      cubes.push(cube);  
+    }
+    
+	  controls = new THREE.PointerLockControls( camera );
 		scene.add( controls.getObject() );
 
 		ray = new THREE.Raycaster();
@@ -128,8 +160,6 @@ $(function () {
 		requestAnimationFrame( animate );
     frameCount++;
 		controls.isOnObject( false );
-    var width = window.innerWidth;
-    var height = window.innerHeight;
     
 		ray.ray.origin.copy(controls.getObject().position);
 		ray.ray.origin.y -= 10;
@@ -142,27 +172,9 @@ $(function () {
 			}
 		}
 		
-		if (frameCount % 2 === 0) {
-      frameCount = 0;
-      var cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-      var cubeGeometry = new THREE.CubeGeometry(64, 64, 64);
-      var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-      
-      var maxX = camera.position.x + (width * 4),
-        minX = camera.position.x - (width * 4);
-      
-      cube.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
-      
-      cube.position.y = height / 8;
-      cube.position.z = Math.floor(Math.random() * (maxX - minX) + minX);
-  
-      scene.add(cube);
-      cubes.push(cube);  
-    }
-    
-
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
 		time = Date.now();
+		stats.update();
 	}
 });
