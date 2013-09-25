@@ -48,10 +48,11 @@ $(function () {
     }
     makeShip();
     camera.lookAt(ship);
+	  
 	  controls = new THREE.PointerLockControls( camera );
 	  controls.enabled = true;
 		scene.add( controls.getObject() );
-
+		
 		ray = new THREE.Raycaster();
 		ray.ray.direction.set( 0, -1, 0 );
 
@@ -65,10 +66,10 @@ $(function () {
 	function makeShip() {
 	  var geom = new THREE.Geometry();
 	  
-	  var bottomLeft = new THREE.Vector3(-50, 0, 0);
-	  var bottomRight = new THREE.Vector3(50, 0, 0);
-	  var bottomFront = new THREE.Vector3(0, 0, 72);
-	  var topBack = new THREE.Vector3(0, 50, 10);
+	  var bottomLeft = new THREE.Vector3(-32, 0, 0);
+	  var bottomRight = new THREE.Vector3(32, 0, 0);
+	  var bottomFront = new THREE.Vector3(0, 0, 64);
+	  var topBack = new THREE.Vector3(0, 32, 16);
 	  geom.vertices.push(bottomLeft);
 	  geom.vertices.push(bottomRight);
 	  geom.vertices.push(bottomFront);
@@ -82,8 +83,13 @@ $(function () {
 	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00 });
 	  ship = new THREE.Mesh(geom, mat);
 	  
-	  ship.position.set(0, 0, -10);
+	  followShip();
 	  scene.add(ship);
+	}
+	
+	function followShip() {
+	  var pos = controls ? controls.getObject().position : camera.position;
+		ship.position.set(pos.x, pos.y - 50, pos.z - 100);
 	}
 	
 	function makeStar() {
@@ -96,10 +102,11 @@ $(function () {
     
     var width = window.innerWidth;
     var height = window.innerHeight;
-    var minX = camera.position.x - width * 4,
-      maxX = camera.position.x + width * 4,
-      minY = camera.position.y + height * 4,
-      maxY = camera.position.y - height * 4;
+    var pos = controls ? controls.getObject().position : camera.position;
+    var minX = pos.x - width * 4,
+      maxX = pos.x + width * 4,
+      minY = pos.y + height * 4,
+      maxY = pos.y - height * 4;
     
     star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
     star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
@@ -147,7 +154,7 @@ $(function () {
       star.position.z += 40;	    
 		}
 		
-		ship.position.set(0, 0, -10);
+		followShip();
 		
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
