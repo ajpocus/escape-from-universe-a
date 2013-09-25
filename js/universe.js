@@ -4,75 +4,10 @@ $(function () {
 	  objects = [],
 	  stars = [],
     frameCount = 0,
-    starMin = 1000,
+    starMin = 6000,
     starMax = 10000;
 
-	var blocker = document.getElementById( 'blocker' );
-	var instructions = document.getElementById( 'instructions' );
-
-	// http://www.html5rocks.com/en/tutorials/pointerlock/intro/
-
-	var havePointerLock = 'pointerLockElement' in document || 'mozPointerLockElement' in document || 'webkitPointerLockElement' in document;
-
-	if ( havePointerLock ) {
-		var element = document.body;
-		var pointerlockchange = function ( event ) {
-			if ( document.pointerLockElement === element || document.mozPointerLockElement === element || document.webkitPointerLockElement === element ) {
-				controls.enabled = true;
-				blocker.style.display = 'none';
-			} else {
-				controls.enabled = false;
-				blocker.style.display = '-webkit-box';
-				blocker.style.display = '-moz-box';
-				blocker.style.display = 'box';
-				instructions.style.display = '';
-			}
-		};
-
-		var pointerlockerror = function ( event ) {
-			instructions.style.display = '';
-		};
-
-		// Hook pointer lock state change events
-		document.addEventListener( 'pointerlockchange', pointerlockchange, false );
-		document.addEventListener( 'mozpointerlockchange', pointerlockchange, false );
-		document.addEventListener( 'webkitpointerlockchange', pointerlockchange, false );
-
-		document.addEventListener( 'pointerlockerror', pointerlockerror, false );
-		document.addEventListener( 'mozpointerlockerror', pointerlockerror, false );
-		document.addEventListener( 'webkitpointerlockerror', pointerlockerror, false );
-
-		instructions.addEventListener( 'click', function ( event ) {
-			instructions.style.display = 'none';
-
-			// Ask the browser to lock the pointer
-			element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-
-			if ( /Firefox/i.test( navigator.userAgent ) ) {
-				var fullscreenchange = function ( event ) {
-					if ( document.fullscreenElement === element || document.mozFullscreenElement === element || document.mozFullScreenElement === element ) {
-						document.removeEventListener( 'fullscreenchange', fullscreenchange );
-						document.removeEventListener( 'mozfullscreenchange', fullscreenchange );
-
-						element.requestPointerLock();
-					}
-				};
-
-				document.addEventListener( 'fullscreenchange', fullscreenchange, false );
-				document.addEventListener( 'mozfullscreenchange', fullscreenchange, false );
-
-				element.requestFullscreen = element.requestFullscreen || 
-				  element.mozRequestFullscreen || 
-				  element.mozRequestFullScreen || 
-				  element.webkitRequestFullscreen;
-				element.requestFullscreen();
-			} else {
-				element.requestPointerLock();
-			}
-		}, false );
-	} else {
-		instructions.innerHTML = 'Your browser doesn\'t seem to support Pointer Lock API';
-	}
+	
 
 	init();
 	animate();
@@ -102,22 +37,7 @@ $(function () {
       height = window.innerHeight;
       
     for (var i = 0; i < 100; i++) {
-      var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-		  var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
-      var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
-      var star = new THREE.Mesh(starGeometry, starMaterial);
-      
-      var minX = camera.position.x - width * 8,
-        maxX = camera.position.x + width * 8,
-        minY = camera.position.y + height * 8,
-        maxY = camera.position.y - height * 8;
-      
-      star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
-      star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
-      star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
-  
-      scene.add(star);
-      stars.push(star);
+      makeStar();
     }
     
     // player's triangle
@@ -141,6 +61,7 @@ $(function () {
     scene.add(triangle);
 
 	  controls = new THREE.PointerLockControls( camera );
+	  controls.enabled = true;
 		scene.add( controls.getObject() );
 
 		ray = new THREE.Raycaster();
@@ -151,6 +72,28 @@ $(function () {
 
 		document.body.appendChild( renderer.domElement );
 		window.addEventListener( 'resize', onWindowResize, false );
+	}
+	
+	function makeStar() {
+	  var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
+    var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
+    var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
+    star = new THREE.Mesh(starGeometry, starMaterial);
+    
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    var minX = camera.position.x - width * 8,
+      maxX = camera.position.x + width * 8,
+      minY = camera.position.y + height * 8,
+      maxY = camera.position.y - height * 8;
+    
+    star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
+    star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
+    star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
+  
+    scene.add(star);
+    stars.push(star);
+    return star;
 	}
 
 	function onWindowResize() {
@@ -186,26 +129,11 @@ $(function () {
 		    delete stars[i];
 	      stars.splice(i, 1);
 
-	      var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-	      var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
-        var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
-        star = new THREE.Mesh(starGeometry, starMaterial);
-        
-        var maxZ = camera.position.x + (width * 4),
-          minZ = camera.position.x - (width * 4);
-        
-        star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
-        star.position.y = height / 8;
-        star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
-    
-        scene.add(star);
-        stars.push(star);
+	      star = makeStar();
 	    }
 	    
-      star.position.z += 20;	    
+      star.position.z += 30;	    
 		}
-		
-		
 		
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
