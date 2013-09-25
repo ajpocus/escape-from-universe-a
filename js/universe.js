@@ -101,17 +101,19 @@ $(function () {
     var width = window.innerWidth,
       height = window.innerHeight;
       
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 100; i++) {
       var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
 		  var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
       var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
       var star = new THREE.Mesh(starGeometry, starMaterial);
       
-      var maxZ = camera.position.x + (width * 4),
-        minZ = camera.position.x - (width * 4);
+      var minX = camera.position.x - width * 8,
+        maxX = camera.position.x + width * 8,
+        minY = camera.position.y + height * 8,
+        maxY = camera.position.y - height * 8;
       
-      star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
-      star.position.y = Math.floor(Math.random() * (maxZ - minZ) + minZ)
+      star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
+      star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
       star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
   
       scene.add(star);
