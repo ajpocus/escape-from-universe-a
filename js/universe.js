@@ -153,22 +153,13 @@ $(function () {
       
       cube.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
       
-      cube.position.y = height / 4;
-      cube.position.z = -10000;
+      cube.position.y = height / 8;
+      cube.position.z = Math.floor(Math.random() * (maxX - minX) + minX);
   
       scene.add(cube);
       cubes.push(cube);  
     }
     
-    for (var i = 0; i < cubes.length; i++) {
-      var speed = 56;
-      cubes[i].position.z += speed;
-      
-      if (cubes[i].position.z > 300) {
-        scene.remove(cubes[i]);
-        cubes.splice(i, 1);      
-      }
-    }
 
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
