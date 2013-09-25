@@ -5,7 +5,17 @@ $(function () {
 	  stars = [],
     frameCount = 0,
     spawnMin = 6000,
-    spawnMax = 10000;
+    spawnMax = 10000,
+    dirs = [
+      new THREE.Vector3(0, 0, 1),
+      new THREE.Vector3(1, 0, 1),
+      new THREE.Vector3(1, 0, 0),
+      new THREE.Vector3(1, 0, -1),
+      new THREE.Vector3(0, 0, -1),
+      new THREE.Vector3(-1, 0, -1),
+      new THREE.Vector3(-1, 0, 0),
+      new THREE.Vector3(-1, 0, 1)
+    ];
 
 	init();
 	animate();
@@ -57,7 +67,7 @@ $(function () {
 	    sizeMax = 1000;
     var starRadius = Math.floor(Math.random() * (sizeMax - sizeMin) + sizeMin);
     var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
-    star = new THREE.Mesh(starGeometry, starMaterial);
+    var star = new THREE.Mesh(starGeometry, starMaterial);
     
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -80,7 +90,26 @@ $(function () {
 		camera.updateProjectionMatrix();
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
+	
+	function collisions(geom) {
+	  var collisions,
+      distance = 32,
+      // Get the obstacles array from our world
+      obstacles = basicScene.world.getObstacles();
 
+    for (i = 0; i < dirs.length; i += 1) {
+      // We reset the raycaster to this direction
+      raye.set(this.mesh.position, dirs[i]);
+      
+      collisions = ray.intersectObjects(obstacles);
+    
+      if (collisions.length > 0 && collisions[0].distance <= distance) {
+        // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
+        
+      }
+    }
+	}
+	
 	function animate() {
 		requestAnimationFrame( animate );
 		controls.isOnObject( false );
