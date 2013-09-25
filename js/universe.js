@@ -4,7 +4,8 @@ $(function () {
 	  objects = [],
 	  stars = [],
     frameCount = 0,
-    COLORS = [0xCC0000, 0x00CC00, 0x0000CC];
+    starMin = 1000,
+    starMax = 10000;
 
 	var blocker = document.getElementById( 'blocker' );
 	var instructions = document.getElementById( 'instructions' );
@@ -79,7 +80,7 @@ $(function () {
 	function init() {
 		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 		scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0xFFFFFF, 100, 1000)
+    scene.fog = new THREE.Fog(0x000000, 5000, 10000)
     
     // create a point light
     var light = new THREE.AmbientLight(0x404040);
@@ -100,9 +101,9 @@ $(function () {
     var width = window.innerWidth,
       height = window.innerHeight;
       
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 10; i++) {
       var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-		  var starRadius = Math.floor(Math.random() * (100 - 50) + 50);
+		  var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
       var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
       var star = new THREE.Mesh(starGeometry, starMaterial);
       
@@ -110,8 +111,8 @@ $(function () {
         minZ = camera.position.x - (width * 4);
       
       star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
-      star.position.y = height / 8;
-      star.position.z = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+      star.position.y = Math.floor(Math.random() * (maxZ - minZ) + minZ)
+      star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
   
       scene.add(star);
       stars.push(star);
@@ -158,7 +159,6 @@ $(function () {
 
 	function animate() {
 		requestAnimationFrame( animate );
-    frameCount++;
 		controls.isOnObject( false );
     
 		ray.ray.origin.copy(controls.getObject().position);
@@ -180,10 +180,12 @@ $(function () {
 		  var star = stars[i];
 		  
 		  if (star.position.z >= 0) {
+		    scene.remove(stars[i]);
+		    delete stars[i];
 	      stars.splice(i, 1);
-	      
+
 	      var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-  		  var starRadius = Math.floor(Math.random() * (100 - 50) + 50);
+	      var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
         var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
         star = new THREE.Mesh(starGeometry, starMaterial);
         
@@ -192,13 +194,13 @@ $(function () {
         
         star.position.x = Math.floor(Math.random() * (maxZ - minZ) + minZ);
         star.position.y = height / 8;
-        star.position.z = Math.floor(Math.random() * (maxZ - minZ) + minZ);
+        star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
     
         scene.add(star);
         stars.push(star);
 	    }
 	    
-      star.position.z += 10;	    
+      star.position.z += 20;	    
 		}
 		
 		
