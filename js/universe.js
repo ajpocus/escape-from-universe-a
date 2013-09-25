@@ -1,5 +1,5 @@
 $(function () {
-  var camera, scene, renderer, controls, ray, stats,
+  var camera, scene, renderer, controls, ray, stats, ship,
 	  time = Date.now(),
 	  objects = [],
 	  stars = [],
@@ -46,7 +46,8 @@ $(function () {
     for (var i = 0; i < 10; i++) {
       makeStar();
     }
-    
+    makeShip();
+    camera.lookAt(ship);
 	  controls = new THREE.PointerLockControls( camera );
 	  controls.enabled = true;
 		scene.add( controls.getObject() );
@@ -61,8 +62,32 @@ $(function () {
 		window.addEventListener( 'resize', onWindowResize, false );
 	}
 	
+	function makeShip() {
+	  var geom = new THREE.Geometry();
+	  
+	  var bottomLeft = new THREE.Vector3(-50, 0, 0);
+	  var bottomRight = new THREE.Vector3(50, 0, 0);
+	  var bottomFront = new THREE.Vector3(0, 0, 72);
+	  var topBack = new THREE.Vector3(0, 50, 10);
+	  geom.vertices.push(bottomLeft);
+	  geom.vertices.push(bottomRight);
+	  geom.vertices.push(bottomFront);
+	  geom.vertices.push(topBack);
+	  
+	  geom.faces.push(new THREE.Face3(0, 1, 2));
+	  geom.faces.push(new THREE.Face3(0, 1, 3));
+	  geom.faces.push(new THREE.Face3(0, 2, 3));
+	  geom.faces.push(new THREE.Face3(0, 1, 2));
+	  
+	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00 });
+	  ship = new THREE.Mesh(geom, mat);
+	  
+	  ship.position.set(0, 0, -10);
+	  scene.add(ship);
+	}
+	
 	function makeStar() {
-	  var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
+	  var starMaterial = new THREE.MeshBasicMaterial({ color: 0xcccc00 });
 	  var sizeMin = 80,
 	    sizeMax = 1000;
     var starRadius = Math.floor(Math.random() * (sizeMax - sizeMin) + sizeMin);
@@ -91,29 +116,9 @@ $(function () {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	}
 	
-	function collisions(geom) {
-	  var collisions,
-      distance = 32,
-      // Get the obstacles array from our world
-      obstacles = basicScene.world.getObstacles();
-
-    for (i = 0; i < dirs.length; i += 1) {
-      // We reset the raycaster to this direction
-      raye.set(this.mesh.position, dirs[i]);
-      
-      collisions = ray.intersectObjects(obstacles);
-    
-      if (collisions.length > 0 && collisions[0].distance <= distance) {
-        // Yep, this.rays[i] gives us : 0 => up, 1 => up-left, 2 => left, ...
-        
-      }
-    }
-	}
-	
 	function animate() {
 		requestAnimationFrame( animate );
-		controls.isOnObject( false );
-    
+
 		ray.ray.origin.copy(controls.getObject().position);
 		ray.ray.origin.y -= 10;
 
@@ -121,7 +126,7 @@ $(function () {
 		if ( intersections.length > 0 ) {
 			var distance = intersections[0].distance;
 			if (distance > 0 && distance < 10) {
-				controls.isOnObject( true );
+
 			}
 		}
 		
@@ -130,18 +135,19 @@ $(function () {
     var height = window.innerHeight;
     
 		for (var i = 0; i < stars.length; i++) {
-		  var star = stars[i];
+      var star = stars[i];
 		  
 		  if (star.position.z >= 0) {
 		    scene.remove(stars[i]);
 		    delete stars[i];
 	      stars.splice(i, 1);
-
 	      star = makeStar();
 	    }
 	    
       star.position.z += 40;	    
 		}
+		
+		ship.position.set(0, 0, -10);
 		
 		controls.update( Date.now() - time );
 		renderer.render( scene, camera );

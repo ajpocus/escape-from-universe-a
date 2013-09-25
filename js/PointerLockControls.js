@@ -15,13 +15,10 @@ THREE.PointerLockControls = function ( camera ) {
 	yawObject.position.y = 10;
 	yawObject.add( pitchObject );
 
-	var moveForward = false;
-	var moveBackward = false;
+	var moveUp = false;
+	var moveDown = false;
 	var moveLeft = false;
 	var moveRight = false;
-
-	var isOnObject = false;
-	var canJump = false;
 
 	var velocity = new THREE.Vector3();
 
@@ -47,7 +44,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 38: // up
 			case 87: // w
-				moveForward = true;
+				moveUp = true;
 				break;
 
 			case 37: // left
@@ -56,7 +53,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 40: // down
 			case 83: // s
-				moveBackward = true;
+				moveDown = true;
 				break;
 
 			case 39: // right
@@ -73,7 +70,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 38: // up
 			case 87: // w
-				moveForward = false;
+				moveUp = false;
 				break;
 
 			case 37: // left
@@ -83,7 +80,7 @@ THREE.PointerLockControls = function ( camera ) {
 
 			case 40: // down
 			case 83: // a
-				moveBackward = false;
+				moveDown = false;
 				break;
 
 			case 39: // right
@@ -104,13 +101,6 @@ THREE.PointerLockControls = function ( camera ) {
 	this.getObject = function () {
 
 		return yawObject;
-
-	};
-
-	this.isOnObject = function ( boolean ) {
-
-		isOnObject = boolean;
-		canJump = boolean;
 
 	};
 
@@ -142,10 +132,8 @@ THREE.PointerLockControls = function ( camera ) {
 		velocity.x += ( - velocity.x ) * 0.8 * delta;
 		velocity.y += ( - velocity.y ) * 0.8 * delta;
 
-		velocity.y -= 0.25 * delta;
-
-		if ( moveForward ) velocity.y += 20.0 * delta;
-		if ( moveBackward ) velocity.y -= 20.0 * delta;
+		if ( moveUp ) velocity.y += 20.0 * delta;
+		if ( moveDown ) velocity.y -= 20.0 * delta;
 
 		if ( moveLeft ) velocity.x -= 20.0 * delta;
 		if ( moveRight ) velocity.x += 20.0 * delta;
