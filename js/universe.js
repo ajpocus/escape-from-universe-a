@@ -4,10 +4,8 @@ $(function () {
 	  objects = [],
 	  stars = [],
     frameCount = 0,
-    starMin = 6000,
-    starMax = 10000;
-
-	
+    spawnMin = 6000,
+    spawnMax = 10000;
 
 	init();
 	animate();
@@ -19,7 +17,6 @@ $(function () {
     
     // create a point light
     var light = new THREE.AmbientLight(0x404040);
-    light.position.set(0, 50, 130);
     scene.add(light);
 
     stats = new Stats();
@@ -36,30 +33,10 @@ $(function () {
     var width = window.innerWidth,
       height = window.innerHeight;
       
-    for (var i = 0; i < 100; i++) {
+    for (var i = 0; i < 10; i++) {
       makeStar();
     }
     
-    // player's triangle
-    var geom = new THREE.Geometry();
-    var v1 = new THREE.Vector3(0,0,0);
-    var v2 = new THREE.Vector3(20,0,0);
-    var v3 = new THREE.Vector3(10,20,0);
-    
-    console.log(geom.vertices)
-    geom.vertices.push(new THREE.Vertex(v1));
-    geom.vertices.push(new THREE.Vertex(v2));
-    geom.vertices.push(new THREE.Vertex(v3));
-    
-    geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
-    geom.computeFaceNormals();
-    
-    var triangle = new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
-    triangle.position.x = camera.position.x;
-    triangle.position.y = camera.position.y;
-    
-    scene.add(triangle);
-
 	  controls = new THREE.PointerLockControls( camera );
 	  controls.enabled = true;
 		scene.add( controls.getObject() );
@@ -76,20 +53,22 @@ $(function () {
 	
 	function makeStar() {
 	  var starMaterial = new THREE.MeshBasicMaterial({ color: 0xCCCC00 });
-    var starRadius = Math.floor(Math.random() * (500 - 250) + 250);
+	  var sizeMin = 80,
+	    sizeMax = 1000;
+    var starRadius = Math.floor(Math.random() * (sizeMax - sizeMin) + sizeMin);
     var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
     star = new THREE.Mesh(starGeometry, starMaterial);
     
     var width = window.innerWidth;
     var height = window.innerHeight;
-    var minX = camera.position.x - width * 8,
-      maxX = camera.position.x + width * 8,
-      minY = camera.position.y + height * 8,
-      maxY = camera.position.y - height * 8;
+    var minX = camera.position.x - width * 4,
+      maxX = camera.position.x + width * 4,
+      minY = camera.position.y + height * 4,
+      maxY = camera.position.y - height * 4;
     
     star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
     star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
-    star.position.z = -1 * Math.floor(Math.random() * (starMax - starMin) + starMin);
+    star.position.z = -1 * Math.floor(Math.random() * (spawnMax - spawnMin) + spawnMin);
   
     scene.add(star);
     stars.push(star);
@@ -132,7 +111,7 @@ $(function () {
 	      star = makeStar();
 	    }
 	    
-      star.position.z += 30;	    
+      star.position.z += 40;	    
 		}
 		
 		controls.update( Date.now() - time );
