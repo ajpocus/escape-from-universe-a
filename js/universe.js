@@ -29,12 +29,13 @@ define([
     
     document.body.appendChild(stats.domElement);
     
+
     // create field of stars
     var width = window.innerWidth,
       height = window.innerHeight;
     
     makeEdge(); 
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 10; i++) {
       makeStar();
     }
     makeShip();
@@ -103,9 +104,11 @@ define([
     var height = window.innerHeight;
     var pos = controls ? controls.getObject().position : camera.position;
 
-    var idx = Math.floor(Math.random() * starGeometry.vertices.length);
-    var vec = starGeometry.vertices[idx];
-    star.position.set(vec.x, vec.y, 10000);
+    var minDim = 0,
+      maxDim = 20000;
+    var dim = Math.floor(Math.random() * (maxDim - minDim) + minDim);
+    dim -= 10000;
+    star.position.set(dim, dim, 50000);
     
     scene.add(star);
     stars.push(star);
@@ -139,7 +142,9 @@ define([
 		for (var i = 0; i < stars.length; i++) {
       var star = stars[i];
 		  
-		  if (star.position.z >= 0) {
+		  if (-100 <= star.position.x && star.position.x <= 100 &&
+		      -100 <= star.position.y && star.position.y <= 100 &&
+		      -100 <= star.position.z && star.position.z <= 100) {
 		    scene.remove(stars[i]);
 		    delete stars[i];
 	      stars.splice(i, 1);

@@ -129,11 +129,11 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
   		velocity.y += ( - velocity.y ) * 0.8 * delta;
   
-  		if ( moveUp ) velocity.y += 20.0 * delta;
-  		if ( moveDown ) velocity.y -= 20.0 * delta;
+  		if ( moveUp ) velocity.y += 60.0 * delta;
+  		if ( moveDown ) velocity.y -= 60.0 * delta;
   
-  		if ( moveLeft ) velocity.x -= 20.0 * delta;
-  		if ( moveRight ) velocity.x += 20.0 * delta;
+  		if ( moveLeft ) velocity.x -= 60.0 * delta;
+  		if ( moveRight ) velocity.x += 60.0 * delta;
   
   		yawObject.translateX( velocity.x );
   		yawObject.translateY( velocity.y ); 
