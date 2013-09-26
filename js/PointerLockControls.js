@@ -112,19 +112,15 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		var rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
   
   		return function( v ) {
-  
   			rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
-  
   			v.copy( direction ).applyEuler( rotation );
-  
+  			
   			return v;
-  
   		}
   
   	}();
   
   	this.update = function ( delta ) {
-  
   		if ( scope.enabled === false ) return;
   
   		delta *= 0.1;
@@ -140,6 +136,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   		yawObject.translateX( velocity.x );
   		yawObject.translateZ( velocity.z);
+  		camera.translateZ(velocity.z);
   	};
   
   };
