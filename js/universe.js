@@ -1,7 +1,7 @@
 define([
   "jquery-2.0.3", "three.min", "stats", "PointerLockControls", "ship", "star"
 ], function (jquery, three, stats, PointerLockControls, Ship, Star) {
-  var camera, scene, renderer, controls, ray, stats, ship, edge,
+  var camera, scene, renderer, controls, stats, ship, edge,
 	  time = Date.now(),
 	  objects = [],
 	  stars = [],
@@ -47,9 +47,6 @@ define([
 	  controls.enabled = true;
 		scene.add(controls.getObject());
 		
-		ray = new THREE.Raycaster();
-		ray.ray.direction.set(0, -1, 0);
-
 		renderer = new THREE.WebGLRenderer();
 		renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -103,17 +100,6 @@ define([
 	function animate() {
 		requestAnimationFrame( animate );
 
-		ray.ray.origin.copy(controls.getObject().position);
-		ray.ray.origin.y -= 10;
-
-		var intersections = ray.intersectObjects( objects );
-		if ( intersections.length > 0 ) {
-			var distance = intersections[0].distance;
-			if (distance > 0 && distance < 10) {
-
-			}
-		}
-		
 		// update field of stars
     var width = window.innerWidth;
     var height = window.innerHeight;
@@ -127,7 +113,9 @@ define([
 		    scene.remove(stars[i]);
 		    delete stars[i];
 	      stars.splice(i, 1);
-	      star = makeStar();
+	      star = new Star(scene);
+	      stars.push(star);
+	      star = star.mesh;
 	    }
 	    
 	    star.lookAt(new THREE.Vector3(0, 0, 0));
