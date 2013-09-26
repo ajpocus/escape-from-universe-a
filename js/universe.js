@@ -1,4 +1,6 @@
-$(function () {
+define([
+  "jquery-2.0.3", "three.min", "stats", "PointerLockControls"
+], function ($, three, stats, PointerLockControls) {
   var camera, scene, renderer, controls, ray, stats, ship,
 	  time = Date.now(),
 	  objects = [],
