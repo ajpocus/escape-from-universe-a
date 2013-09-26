@@ -32,8 +32,8 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
 	    if (-100 <= star.position.x && star.position.x <= 100 &&
 	        -100 <= star.position.y && star.position.y <= 100 &&
 	        -100 <= star.position.z && star.position.z <= 100) {
-	      universe.scene.remove(stars[i]);
-	      delete stars[i];
+	      universe.scene.remove(universe.stars[i]);
+	      delete universe.stars[i];
         universe.stars.splice(i, 1);
         star = new Star(universe);
         universe.stars.push(star);
