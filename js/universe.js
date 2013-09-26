@@ -8,7 +8,7 @@ define([
       far = 100000;
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 	  this.scene = new THREE.Scene();
-    // this.scene.fog = new THREE.Fog(0xffffff, 5000, 10000);
+    this.scene.fog = new THREE.Fog(0x000000, 48000, 72000);
     this.time = Date.now();
     this.stars = [];
     
@@ -34,7 +34,7 @@ define([
   }
   
   Universe.prototype.postPopulate = function () {
-    this.controls = new THREE.PointerLockControls(this.camera);
+    this.controls = new THREE.PointerLockControls(this);
     this.controls.enabled = true;
 	  this.scene.add(this.controls.getObject());
 	
@@ -67,7 +67,6 @@ define([
 	  Star.updateStars(this);
     
 	  this.controls.update(Date.now() - this.time);
-	  this.ship.center();
     
 	  this.renderer.render(this.scene, this.camera);
 	  this.time = Date.now();
