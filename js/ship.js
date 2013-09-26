@@ -15,7 +15,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
 	  
 	  geom.faces.push(new THREE.Face3(2, 1, 0));
 
-	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00 });
+	  var mat = new THREE.MeshBasicMaterial({ color: 0x0000cc });
 	  this.mesh = new THREE.Mesh(geom, mat);
 	  universe.scene.add(this.mesh);
   }

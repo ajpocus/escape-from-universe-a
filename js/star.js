@@ -2,8 +2,8 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
   function Star(universe) {
     var edge = universe.edge;
     var starMaterial = new THREE.MeshBasicMaterial({ color: 0xcccc00 });
-	  var sizeMin = 80,
-	    sizeMax = 1000;
+	  var sizeMin = 800,
+	    sizeMax = 2600;
 	  
     var starRadius = Math.floor(Math.random() * (sizeMax - sizeMin) + sizeMin);
     var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);

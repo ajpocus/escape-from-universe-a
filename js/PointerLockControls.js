@@ -8,15 +8,8 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   	camera.rotation.set(0, 0, 0);
     ship.mesh.rotation.set(0, 0, 0);
     camera.rotation.order = "YXZ";
+    ship.mesh.rotation.order = "YXZ";
     
-    // controls the camera's x-axis rotation, including the camera as a child
-  	var pitchObject = new THREE.Object3D();
-  	pitchObject.add(camera);
-
-    // controls the camera's y-axis rotation, including pitchObject as a child
-  	var yawObject = new THREE.Object3D();
-  	yawObject.add(pitchObject);
-  
     // initialize movement flags for the update loop
   	var moveForward = false;
   	var moveBack = false;
@@ -43,10 +36,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     
   		camera.rotation.y -= movementX * 0.001;
   		camera.rotation.x -= movementY * 0.001;
-  
   		camera.rotation.x = Math.max( - PI_2, Math.min( PI_2, camera.rotation.x ) );
-  		console.log(yawObject.position);
-  		console.log(camera.position);
   	};
   
   	var onKeyDown = function ( event ) {
@@ -110,24 +100,8 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   	this.enabled = false;
   
   	this.getObject = function () {
-  
-  		return yawObject;
-  
+  		return camera;
   	};
-  
-  	this.getDirection = function() {
-  		// assumes the camera itself is not rotated
-  		var direction = new THREE.Vector3(0, 0, -1);
-  		var rotation = new THREE.Euler(0, 0, 0, "YXZ");
-  
-  		return function( v ) {
-  			rotation.set( pitchObject.rotation.x, camera.rotation.y, 0 );
-  			v.copy( direction ).applyEuler( rotation );
-  			
-  			return v;
-  		}
-  
-  	}();
   
   	this.update = function ( delta ) {
   		if ( scope.enabled === false ) return;
@@ -144,7 +118,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		if ( moveLeft ) velocity.x -= speed * delta;
   		if ( moveRight ) velocity.x += speed * delta;
 
-      camera.translateX(velocity.x);  		
+      camera.translateX(velocity.x);		
   		camera.translateZ(velocity.z);
   	};
   

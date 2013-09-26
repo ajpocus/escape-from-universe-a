@@ -7,6 +7,7 @@ define([
       near = 0.1,
       far = 100000;
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
+	  
 	  this.scene = new THREE.Scene();
     this.scene.fog = new THREE.Fog(0x000000, 48000, 72000);
     this.time = Date.now();
@@ -37,8 +38,12 @@ define([
     this.ray = new THREE.Raycaster();
     this.controls = new THREE.PointerLockControls(this);
     this.controls.enabled = true;
+	  this.camera.add(this.ship.mesh);
+	  this.ship.mesh.translateY(-100);
+	  this.ship.mesh.translateZ(-100);
+	  
 	  this.scene.add(this.controls.getObject());
-	
+	  
 	  this.renderer = new THREE.WebGLRenderer();
 	  this.renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -70,9 +75,10 @@ define([
 	  Star.updateStars(this);
     
     this.ray.ray.origin.copy( this.controls.getObject().position );
+    this.ray.ray.origin.copy( this.ship.mesh.position );
 	  this.ray.ray.origin.y -= 10;
 	  this.controls.update(Date.now() - this.time);
-    
+	  
 	  this.renderer.render(this.scene, this.camera);
 	  this.time = Date.now();
 	  this.stats.update();
