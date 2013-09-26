@@ -3,40 +3,48 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     var camera = universe.camera;
     var ship = universe.ship;
   	var scope = this;
-    camera.position.z = 50000;
-    
+
+    // initialize with neutral rotation
   	camera.rotation.set(0, 0, 0);
     ship.mesh.rotation.set(0, 0, 0);
     
+    // controls the camera's x-axis rotation, including the camera as a child
   	var pitchObject = new THREE.Object3D();
   	pitchObject.add(camera);
-    pitchObject.add(ship.mesh);
-    
+
+    // controls the camera's y-axis rotation, including pitchObject as a child
   	var yawObject = new THREE.Object3D();
   	yawObject.add(pitchObject);
   
+    // initialize movement flags for the update loop
   	var moveForward = false;
   	var moveBack = false;
   	var moveLeft = false;
   	var moveRight = false;
   
+    // initialize an empty velocity vector
   	var velocity = new THREE.Vector3();
-  
+    
+    // save pi/2 for later calculation; represents 180-degree view (-pi/2, pi/2)
   	var PI_2 = Math.PI / 2;
   
+    // captures relative mouse movements using the mouse capture API
   	var onMouseMove = function ( event ) {
-  
+      // do nothing if controls are disabled
   		if ( scope.enabled === false ) return;
   
+      // get the relative mouse movement
   		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
   		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
       
+      // convert movement to radians and apply to rotation objects
+      var pixelsX = movementX,
+        pixelsY = movementY;
+      // ...work in progress.
+      
   		yawObject.rotation.y -= movementX * 0.002;
   		pitchObject.rotation.x -= movementY * 0.002;
-  
   		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
-  		yawObject.rotation.y = Math.max( - PI_2, Math.min( PI_2, yawObject.rotation.y ) );
-  
   	};
   
   	var onKeyDown = function ( event ) {
@@ -106,14 +114,12 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   	};
   
   	this.getDirection = function() {
-  
   		// assumes the camera itself is not rotated
-  
-  		var direction = new THREE.Vector3( 0, 0, -1 );
-  		var rotation = new THREE.Euler( 0, 0, 0, "YXZ" );
+  		var direction = new THREE.Vector3(0, 0, -1);
+  		var rotation = new THREE.Euler(0, 0, 0, "YXZ");
   
   		return function( v ) {
-  			rotation.set( pitchObject.rotation.x, yawObject.rotation.y, 0 );
+  			rotation.set( pitchObject.rotation.x, camera.rotation.y, 0 );
   			v.copy( direction ).applyEuler( rotation );
   			
   			return v;
@@ -134,9 +140,6 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   		if ( moveLeft ) velocity.x -= 60.0 * delta;
   		if ( moveRight ) velocity.x += 60.0 * delta;
-  
-  		yawObject.translateX( velocity.x );
-  		yawObject.translateZ( velocity.z);
 
       camera.translateX(velocity.x);  		
   		camera.translateZ(velocity.z);
