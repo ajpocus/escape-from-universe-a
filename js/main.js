@@ -12,7 +12,7 @@ require([
   }
   
   universeA.ship = new Ship(universeA);
-  var vec = new THREE.Vector3(0, 0, -100);
+  var vec = new THREE.Vector3(0, -10, -100);
   vec.applyMatrix4(universeA.camera.matrixWorld);
   universeA.ship.mesh.position.set(vec.x, vec.y, vec.z);
   universeA.camera.lookAt(universeA.ship.mesh);
