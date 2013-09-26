@@ -12,7 +12,6 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     pitchObject.add(ship.mesh);
     
   	var yawObject = new THREE.Object3D();
-  	yawObject.position.y = 10;
   	yawObject.add(pitchObject);
   
   	var moveForward = false;
@@ -137,11 +136,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		yawObject.translateX( velocity.x );
   		yawObject.translateZ( velocity.z);
   		
-  		camera.translateX( velocity.x );
   		camera.translateZ(velocity.z);
-  		
-  		ship.mesh.translateX(velocity.x);
-  		ship.mesh.translateZ(velocity.z);
   	};
   
   };

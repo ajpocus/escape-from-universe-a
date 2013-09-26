@@ -14,7 +14,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
     var vec = edge.geometry.vertices[vecIdx];
     
-    var zSub = 20000;
+    var zSub = 50000;
     var randZ = vec.z - Math.floor(Math.random() * zSub);
     mesh.position.set(vec.x, vec.y, randZ);
     
@@ -27,21 +27,25 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var height = window.innerHeight;
     
 	  for (var i = 0; i < universe.stars.length; i++) {
-      var star = universe.stars[i].mesh;
+      var star = universe.stars[i];
+	    var mesh = star.mesh;
 	    
-	    if (-100 <= star.position.x && star.position.x <= 100 &&
-	        -100 <= star.position.y && star.position.y <= 100 &&
-	        -100 <= star.position.z && star.position.z <= 100) {
+	    if (-100 <= mesh.position.x && mesh.position.x <= 100 &&
+	        -100 <= mesh.position.y && mesh.position.y <= 100 &&
+	        -100 <= mesh.position.z && mesh.position.z <= 100)
+	    {
 	      universe.scene.remove(universe.stars[i]);
 	      delete universe.stars[i];
         universe.stars.splice(i, 1);
+        
         star = new Star(universe);
         universe.stars.push(star);
-        star = star.mesh;
+        star = star
+        mesh = star.mesh;
       }
       
-      star.lookAt(new THREE.Vector3(0, 0, 0));
-      star.translateZ(50);
+      mesh.lookAt(new THREE.Vector3(0, 0, 0));
+      //mesh.translateZ(50);
 	  }
   };
   
