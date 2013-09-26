@@ -15,6 +15,5 @@ require([
   
   universeA.postPopulate();
   universeA.animate();
-  console.log("YO");
   UniverseA = universeA;
 });
