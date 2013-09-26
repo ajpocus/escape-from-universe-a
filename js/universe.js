@@ -4,16 +4,16 @@ define([
   function Universe() {
     var angle = 75,
       aspect = window.innerWidth / window.innerHeight,
-      near = 1,
-      far = 100000;
+      near = 0.1,
+      far = 50000;
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 	  this.scene = new THREE.Scene();
-    // scene.fog = new THREE.Fog(0x000000, 5000, 10000);
+    // this.scene.fog = new THREE.Fog(0xffffff, 5000, 10000);
     this.time = Date.now();
     this.stars = [];
     
     // create a point light
-    this.light = new THREE.AmbientLight(0x404040);
+    this.light = new THREE.AmbientLight(0xffffff);
     this.scene.add(this.light);
 
     this.stats = new Stats();
@@ -31,7 +31,9 @@ define([
       height = window.innerHeight;
     
     this.makeEdge();
-    
+  }
+  
+  Universe.prototype.postPopulate = function () {
     this.controls = new THREE.PointerLockControls(this.camera);
     this.controls.enabled = true;
 	  this.scene.add(this.controls.getObject());
@@ -41,13 +43,13 @@ define([
 
 	  document.body.appendChild(this.renderer.domElement);
 	  window.addEventListener('resize', this.onWindowResize.bind(this), false);
-  }
+  };
 	
 	Universe.prototype.makeEdge = function makeEdge() {
     var geom = new THREE.SphereGeometry(50000, 50, 50);
     var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00, wireframe: true });
     this.edge = new THREE.Mesh(geom, mat);
-    this.edge.position.set(0, 0, 0);
+
     this.scene.add(this.edge);
     console.log(this.edge);
   };

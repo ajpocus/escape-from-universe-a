@@ -1,3 +1,5 @@
+UniverseA = null;
+
 require([
   "jquery-2.0.3", "three.min", "PointerLockControls", "stats", "universe", "star",
   "ship"
@@ -10,6 +12,9 @@ require([
   }
   ship = new Ship(universeA);
   universeA.camera.lookAt(ship);
+  
+  universeA.postPopulate();
   universeA.animate();
   console.log("YO");
+  UniverseA = universeA;
 });
