@@ -3,7 +3,8 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     var camera = universe.camera;
     var ship = universe.ship;
   	var scope = this;
-  
+    camera.position.z = 50000;
+    
   	camera.rotation.set(0, 0, 0);
     ship.mesh.rotation.set(0, 0, 0);
     
@@ -29,11 +30,12 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
   		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
-  
+      
   		yawObject.rotation.y -= movementX * 0.002;
   		pitchObject.rotation.x -= movementY * 0.002;
   
   		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+  		yawObject.rotation.y = Math.max( - PI_2, Math.min( PI_2, yawObject.rotation.y ) );
   
   	};
   
@@ -135,7 +137,8 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   		yawObject.translateX( velocity.x );
   		yawObject.translateZ( velocity.z);
-  		
+
+      camera.translateX(velocity.x);  		
   		camera.translateZ(velocity.z);
   	};
   
