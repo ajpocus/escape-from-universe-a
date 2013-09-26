@@ -7,6 +7,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     // initialize with neutral rotation
   	camera.rotation.set(0, 0, 0);
     ship.mesh.rotation.set(0, 0, 0);
+    camera.rotation.order = "YXZ";
     
     // controls the camera's x-axis rotation, including the camera as a child
   	var pitchObject = new THREE.Object3D();
