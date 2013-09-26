@@ -2,14 +2,13 @@ require([
   "jquery-2.0.3", "three.min", "PointerLockControls", "stats", "universe", "star",
   "ship"
 ], function ($, three, PointerLockControls, Stats, Universe, Star, Ship) {
-  Universe.init();
+  var universeA = new Universe();
   
   for (var i = 0; i < 100; i++) {
-    star = new Star(Universe.scene);
-    Universe.stars.push(Universe.star);
+    var star = new Star(universeA);
+    universeA.stars.push(star);
   }
-  ship = new Ship(Universe.scene);
-  Universe.camera.lookAt(ship);
-  
-  Universe.animate();
+  ship = new Ship(universeA);
+  universeA.camera.lookAt(ship);
+  universeA.animate();
 });

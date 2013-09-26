@@ -1,8 +1,6 @@
-define([
-  "jquery-2.0.3", "three.min", "universe"
-], function (jquery, three, Universe) {
-  function Star(scene) {
-    var edge = Universe.edge;
+define(["jquery-2.0.3", "three.min"], function (jquery, three) {
+  function Star(universe) {
+    var edge = universe.edge;
     var starMaterial = new THREE.MeshBasicMaterial({ color: 0xcccc00 });
 	  var sizeMin = 80,
 	    sizeMax = 1000;
@@ -20,9 +18,32 @@ define([
     var randZ = vec.z - Math.floor(Math.random() * zSub);
     mesh.position.set(vec.x, vec.y, randZ);
     
-    scene.add(mesh);
+    universe.scene.add(mesh);
     this.mesh = mesh;
   }
+  
+  Star.updateStars = function (universe) {
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+    
+	  for (var i = 0; i < universe.stars.length; i++) {
+      var star = universe.stars[i].mesh;
+	    
+	    if (-100 <= star.position.x && star.position.x <= 100 &&
+	        -100 <= star.position.y && star.position.y <= 100 &&
+	        -100 <= star.position.z && star.position.z <= 100) {
+	      universe.scene.remove(stars[i]);
+	      delete stars[i];
+        universe.stars.splice(i, 1);
+        star = new Star(universe);
+        universe.stars.push(star);
+        star = star.mesh;
+      }
+      
+      star.lookAt(new THREE.Vector3(0, 0, 0));
+      star.translateZ(100);
+	  }
+  };
   
   return Star;
 });

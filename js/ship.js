@@ -1,5 +1,5 @@
 define(["jquery-2.0.3", "three.min"], function (jquery, three) {
-  function Ship(scene) {
+  function Ship(universe) {
     var geom = new THREE.Geometry();
 	  
 	  var bottomLeft = new THREE.Vector3(-32, 0, 0);
@@ -20,7 +20,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
 	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00 });
 	  this.mesh = new THREE.Mesh(geom, mat);
 	  
-	  scene.add(this.mesh);
+	  universe.scene.add(this.mesh);
   }
   
   return Ship;
