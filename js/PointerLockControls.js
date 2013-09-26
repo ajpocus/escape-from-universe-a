@@ -1,4 +1,4 @@
-define(["three.min"], function (three) {
+define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   THREE.PointerLockControls = function ( camera ) {
   
   	var scope = this;

@@ -1,31 +1,21 @@
 define([
   "jquery-2.0.3", "three.min", "stats", "PointerLockControls"
-], function ($, three, stats, PointerLockControls) {
-  var camera, scene, renderer, controls, ray, stats, ship,
+], function (j$, three, stats, PointerLockControls) {
+  var camera, scene, renderer, controls, ray, stats, ship, edge,
 	  time = Date.now(),
 	  objects = [],
 	  stars = [],
     frameCount = 0,
     spawnMin = 6000,
-    spawnMax = 10000,
-    dirs = [
-      new THREE.Vector3(0, 0, 1),
-      new THREE.Vector3(1, 0, 1),
-      new THREE.Vector3(1, 0, 0),
-      new THREE.Vector3(1, 0, -1),
-      new THREE.Vector3(0, 0, -1),
-      new THREE.Vector3(-1, 0, -1),
-      new THREE.Vector3(-1, 0, 0),
-      new THREE.Vector3(-1, 0, 1)
-    ];
-
+    spawnMax = 10000;
+    
 	init();
 	animate();
 
 	function init() {
 		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 		scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x000000, 5000, 10000)
+    // scene.fog = new THREE.Fog(0x000000, 5000, 10000);
     
     // create a point light
     var light = new THREE.AmbientLight(0x404040);
@@ -39,30 +29,39 @@ define([
     stats.domElement.style.left = '0px';
     stats.domElement.style.top = '0px';
     
-    document.body.appendChild( stats.domElement );
+    document.body.appendChild(stats.domElement);
     
     // create field of stars
     var width = window.innerWidth,
       height = window.innerHeight;
-      
+    
+    makeEdge(); 
     for (var i = 0; i < 10; i++) {
       makeStar();
     }
     makeShip();
     camera.lookAt(ship);
 	  
-	  controls = new THREE.PointerLockControls( camera );
+	  controls = new THREE.PointerLockControls(camera);
 	  controls.enabled = true;
-		scene.add( controls.getObject() );
+		scene.add(controls.getObject());
 		
 		ray = new THREE.Raycaster();
-		ray.ray.direction.set( 0, -1, 0 );
+		ray.ray.direction.set(0, -1, 0);
 
 		renderer = new THREE.WebGLRenderer();
-		renderer.setSize( window.innerWidth, window.innerHeight );
+		renderer.setSize(window.innerWidth, window.innerHeight);
 
-		document.body.appendChild( renderer.domElement );
-		window.addEventListener( 'resize', onWindowResize, false );
+		document.body.appendChild(renderer.domElement);
+		window.addEventListener('resize', onWindowResize, false);
+	}
+	
+	function makeEdge() {
+	  var geom = new THREE.SphereGeometry(50000, 50, 50);
+	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00, wireframe: true });
+	  edge = new THREE.Mesh(geom, mat);
+	  edge.position.set(0, 0, 0);
+	  scene.add(edge);
 	}
 	
 	function makeShip() {
