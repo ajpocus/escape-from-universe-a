@@ -37,14 +37,15 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
   		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
       
-      // convert movement to radians and apply to rotation objects
-      var pixelsX = movementX,
-        pixelsY = movementY;
-      // ...work in progress.
-      
-  		yawObject.rotation.y -= movementX * 0.002;
-  		pitchObject.rotation.x -= movementY * 0.002;
-  		pitchObject.rotation.x = Math.max( - PI_2, Math.min( PI_2, pitchObject.rotation.x ) );
+      var movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+  		var movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+    
+  		camera.rotation.y -= movementX * 0.001;
+  		camera.rotation.x -= movementY * 0.001;
+  
+  		camera.rotation.x = Math.max( - PI_2, Math.min( PI_2, camera.rotation.x ) );
+  		console.log(yawObject.position);
+  		console.log(camera.position);
   	};
   
   	var onKeyDown = function ( event ) {
@@ -135,11 +136,12 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
   		velocity.z += ( - velocity.z ) * 0.8 * delta;
   
-  		if ( moveForward ) velocity.z -= 60.0 * delta;
-  		if ( moveBack ) velocity.z += 60.0 * delta;
+      var speed = 180.0;
+  		if ( moveForward ) velocity.z -= speed * delta;
+  		if ( moveBack ) velocity.z += speed * delta;
   
-  		if ( moveLeft ) velocity.x -= 60.0 * delta;
-  		if ( moveRight ) velocity.x += 60.0 * delta;
+  		if ( moveLeft ) velocity.x -= speed * delta;
+  		if ( moveRight ) velocity.x += speed * delta;
 
       camera.translateX(velocity.x);  		
   		camera.translateZ(velocity.z);

@@ -34,6 +34,7 @@ define([
   }
   
   Universe.prototype.postPopulate = function () {
+    this.ray = new THREE.Raycaster();
     this.controls = new THREE.PointerLockControls(this);
     this.controls.enabled = true;
 	  this.scene.add(this.controls.getObject());
@@ -63,9 +64,13 @@ define([
   Universe.prototype.animate = function animate() {
 	  requestAnimationFrame(this.animate.bind(this));
     
+    // update controls
+    
 	  // update field of stars
 	  Star.updateStars(this);
     
+    this.ray.ray.origin.copy( this.controls.getObject().position );
+	  this.ray.ray.origin.y -= 10;
 	  this.controls.update(Date.now() - this.time);
     
 	  this.renderer.render(this.scene, this.camera);
