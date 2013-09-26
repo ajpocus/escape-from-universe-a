@@ -111,7 +111,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
   		velocity.z += ( - velocity.z ) * 0.8 * delta;
   
-      var speed = 180.0;
+      var speed = 50.0;
   		if ( moveForward ) velocity.z -= speed * delta;
   		if ( moveBack ) velocity.z += speed * delta;
   
