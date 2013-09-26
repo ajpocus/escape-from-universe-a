@@ -5,9 +5,7 @@ define([
 	  time = Date.now(),
 	  objects = [],
 	  stars = [],
-    frameCount = 0,
-    spawnMin = 6000,
-    spawnMax = 10000;
+    frameCount = 0;
     
 	init();
 	animate();
@@ -36,7 +34,7 @@ define([
       height = window.innerHeight;
     
     makeEdge(); 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 1000; i++) {
       makeStar();
     }
     makeShip();
@@ -104,15 +102,11 @@ define([
     var width = window.innerWidth;
     var height = window.innerHeight;
     var pos = controls ? controls.getObject().position : camera.position;
-    var minX = pos.x - width * 4,
-      maxX = pos.x + width * 4,
-      minY = pos.y + height * 4,
-      maxY = pos.y - height * 4;
+
+    var idx = Math.floor(Math.random() * starGeometry.vertices.length);
+    var vec = starGeometry.vertices[idx];
+    star.position.set(vec.x, vec.y, 10000);
     
-    star.position.x = Math.floor(Math.random() * (maxX - minX) + minX);
-    star.position.y = Math.floor(Math.random() * (maxY - minY) + minY);
-    star.position.z = -1 * Math.floor(Math.random() * (spawnMax - spawnMin) + spawnMin);
-  
     scene.add(star);
     stars.push(star);
     return star;
@@ -152,7 +146,9 @@ define([
 	      star = makeStar();
 	    }
 	    
-      star.position.z += 40;	    
+	    star.lookAt(new THREE.Vector3(0, 0, 0));
+	    star.translateZ(40);
+      
 		}
 		
 		controls.update( Date.now() - time );
