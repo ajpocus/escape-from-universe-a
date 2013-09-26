@@ -5,7 +5,7 @@ define([
     var angle = 75,
       aspect = window.innerWidth / window.innerHeight,
       near = 0.1,
-      far = 50000;
+      far = 100000;
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 	  this.scene = new THREE.Scene();
     // this.scene.fog = new THREE.Fog(0xffffff, 5000, 10000);
