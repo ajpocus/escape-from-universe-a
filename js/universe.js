@@ -1,6 +1,6 @@
 define([
-  "jquery-2.0.3", "three.min", "stats", "PointerLockControls"
-], function (j$, three, stats, PointerLockControls) {
+  "jquery-2.0.3", "three.min", "stats", "PointerLockControls", "ship", "star"
+], function (jquery, three, stats, PointerLockControls, Ship, Star) {
   var camera, scene, renderer, controls, ray, stats, ship, edge,
 	  time = Date.now(),
 	  objects = [],
@@ -35,10 +35,12 @@ define([
       height = window.innerHeight;
     
     makeEdge(); 
+    scene.edge = edge;
     for (var i = 0; i < 100; i++) {
-      makeStar();
+      star = new Star(scene);
+      stars.push(star);
     }
-    makeShip();
+    ship = new Ship(scene);
     camera.lookAt(ship);
 	  
 	  controls = new THREE.PointerLockControls(camera);
@@ -63,33 +65,9 @@ define([
 	  scene.add(edge);
 	}
 	
-	function makeShip() {
-	  var geom = new THREE.Geometry();
-	  
-	  var bottomLeft = new THREE.Vector3(-32, 0, 0);
-	  var bottomRight = new THREE.Vector3(32, 0, 0);
-	  var bottomFront = new THREE.Vector3(0, 0, 64);
-	  var topBack = new THREE.Vector3(0, 32, 16);
-	  geom.vertices.push(bottomLeft);
-	  geom.vertices.push(bottomRight);
-	  geom.vertices.push(bottomFront);
-	  geom.vertices.push(topBack);
-	  
-	  geom.faces.push(new THREE.Face3(0, 1, 2));
-	  geom.faces.push(new THREE.Face3(0, 1, 3));
-	  geom.faces.push(new THREE.Face3(0, 2, 3));
-	  geom.faces.push(new THREE.Face3(0, 1, 2));
-	  
-	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00 });
-	  ship = new THREE.Mesh(geom, mat);
-	  
-	  followShip();
-	  scene.add(ship);
-	}
-	
 	function followShip() {
 	  var pos = controls ? controls.getObject().position : camera.position;
-		ship.position.set(pos.x, pos.y - 50, pos.z - 100);
+		ship.mesh.position.set(pos.x, pos.y - 50, pos.z - 100);
 	}
 	
 	function makeStar() {
@@ -112,7 +90,7 @@ define([
     star.position.set(vec.x, vec.y, randZ);
     
     scene.add(star);
-    stars.push(star);
+    
     return star;
 	}
 
@@ -141,7 +119,7 @@ define([
     var height = window.innerHeight;
     
 		for (var i = 0; i < stars.length; i++) {
-      var star = stars[i];
+      var star = stars[i].mesh;
 		  
 		  if (-100 <= star.position.x && star.position.x <= 100 &&
 		      -100 <= star.position.y && star.position.y <= 100 &&
