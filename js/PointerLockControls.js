@@ -1,19 +1,22 @@
 define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
-  THREE.PointerLockControls = function ( camera ) {
-  
+  THREE.PointerLockControls = function ( universe ) {
+    var camera = universe.camera;
+    var ship = universe.ship;
   	var scope = this;
   
-  	camera.rotation.set( 0, 0, 0 );
-  
+  	camera.rotation.set(0, 0, 0);
+    ship.mesh.rotation.set(0, 0, 0);
+    
   	var pitchObject = new THREE.Object3D();
-  	pitchObject.add( camera );
-  
+  	pitchObject.add(camera);
+    pitchObject.add(ship.mesh);
+    
   	var yawObject = new THREE.Object3D();
   	yawObject.position.y = 10;
-  	yawObject.add( pitchObject );
+  	yawObject.add(pitchObject);
   
-  	var moveUp = false;
-  	var moveDown = false;
+  	var moveForward = false;
+  	var moveBack = false;
   	var moveLeft = false;
   	var moveRight = false;
   
@@ -41,7 +44,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 38: // up
   			case 87: // w
-  				moveUp = true;
+  				moveForward = true;
   				break;
   
   			case 37: // left
@@ -50,7 +53,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 40: // down
   			case 83: // s
-  				moveDown = true;
+  				moveBack = true;
   				break;
   
   			case 39: // right
@@ -67,7 +70,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 38: // up
   			case 87: // w
-  				moveUp = false;
+  				moveForward = false;
   				break;
   
   			case 37: // left
@@ -77,7 +80,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 40: // down
   			case 83: // a
-  				moveDown = false;
+  				moveBack = false;
   				break;
   
   			case 39: // right
@@ -127,18 +130,16 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		delta *= 0.1;
   
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
-  		velocity.y += ( - velocity.y ) * 0.8 * delta;
+  		velocity.z += ( - velocity.z ) * 0.8 * delta;
   
-  		if ( moveUp ) velocity.y += 60.0 * delta;
-  		if ( moveDown ) velocity.y -= 60.0 * delta;
+  		if ( moveForward ) velocity.z -= 60.0 * delta;
+  		if ( moveBack ) velocity.z += 60.0 * delta;
   
   		if ( moveLeft ) velocity.x -= 60.0 * delta;
   		if ( moveRight ) velocity.x += 60.0 * delta;
   
   		yawObject.translateX( velocity.x );
-  		yawObject.translateY( velocity.y ); 
   		yawObject.translateZ( velocity.z);
-  
   	};
   
   };
