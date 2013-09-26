@@ -136,7 +136,12 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   		yawObject.translateX( velocity.x );
   		yawObject.translateZ( velocity.z);
+  		
+  		camera.translateX( velocity.x );
   		camera.translateZ(velocity.z);
+  		
+  		ship.mesh.translateX(velocity.x);
+  		ship.mesh.translateZ(velocity.z);
   	};
   
   };
