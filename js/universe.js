@@ -13,7 +13,7 @@ define([
 	animate();
 
 	function init() {
-		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
+		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 100000 );
 		scene = new THREE.Scene();
     // scene.fog = new THREE.Fog(0x000000, 5000, 10000);
     
@@ -155,9 +155,9 @@ define([
       star.position.z += 40;	    
 		}
 		
+		controls.update( Date.now() - time );
 		followShip();
 		
-		controls.update( Date.now() - time );
 		renderer.render( scene, camera );
 		time = Date.now();
 		stats.update();
