@@ -54,11 +54,6 @@ define([
     console.log(this.edge);
   };
 
-  Universe.prototype.followShip = function followShip() {
-    var pos = this.controls ? this.controls.getObject().position : this.camera.position;
-	  ship.mesh.position.set(pos.x, pos.y - 50, pos.z - 100);
-  };
-
   Universe.prototype.onWindowResize = function onWindowResize() {
 	  this.camera.aspect = window.innerWidth / window.innerHeight;
 	  this.camera.updateProjectionMatrix();
@@ -72,7 +67,7 @@ define([
 	  Star.updateStars(this);
     
 	  this.controls.update(Date.now() - this.time);
-	  this.followShip();
+	  this.ship.center();
     
 	  this.renderer.render(this.scene, this.camera);
 	  this.time = Date.now();

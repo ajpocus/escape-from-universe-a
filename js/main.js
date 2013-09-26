@@ -10,8 +10,8 @@ require([
     var star = new Star(universeA);
     universeA.stars.push(star);
   }
-  ship = new Ship(universeA);
-  universeA.camera.lookAt(ship);
+  universeA.ship = new Ship(universeA);
+  universeA.camera.lookAt(universeA.ship.mesh);
   
   universeA.postPopulate();
   universeA.animate();
