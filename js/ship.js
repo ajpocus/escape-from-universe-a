@@ -21,6 +21,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
 	  this.mesh = new THREE.Mesh(geom, mat);
 	  
 	  universe.scene.add(this.mesh);
+	  console.log(this.mesh.position);
   }
   
   return Ship;

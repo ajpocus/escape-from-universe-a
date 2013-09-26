@@ -4,11 +4,12 @@ require([
 ], function ($, three, PointerLockControls, Stats, Universe, Star, Ship) {
   var universeA = new Universe();
   
-  for (var i = 0; i < 100; i++) {
+  for (var i = 0; i < 10; i++) {
     var star = new Star(universeA);
     universeA.stars.push(star);
   }
   ship = new Ship(universeA);
   universeA.camera.lookAt(ship);
   universeA.animate();
+  console.log("YO");
 });

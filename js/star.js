@@ -41,7 +41,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       }
       
       star.lookAt(new THREE.Vector3(0, 0, 0));
-      star.translateZ(100);
+      star.translateZ(50);
 	  }
   };
   

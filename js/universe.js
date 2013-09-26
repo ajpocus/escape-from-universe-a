@@ -2,9 +2,9 @@ define([
   "jquery-2.0.3", "three.min", "stats", "PointerLockControls", "star",
 ], function (jquery, three, stats, PointerLockControls, Star) {
   function Universe() {
-    var angle = 45,
+    var angle = 75,
       aspect = window.innerWidth / window.innerHeight,
-      near = 0.1,
+      near = 1,
       far = 100000;
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 	  this.scene = new THREE.Scene();
@@ -49,6 +49,7 @@ define([
     this.edge = new THREE.Mesh(geom, mat);
     this.edge.position.set(0, 0, 0);
     this.scene.add(this.edge);
+    console.log(this.edge);
   };
 
   Universe.prototype.followShip = function followShip() {
@@ -64,13 +65,13 @@ define([
 
   Universe.prototype.animate = function animate() {
 	  requestAnimationFrame(this.animate.bind(this));
-
+    
 	  // update field of stars
 	  Star.updateStars(this);
     
 	  this.controls.update(Date.now() - this.time);
 	  this.followShip();
-	
+    
 	  this.renderer.render(this.scene, this.camera);
 	  this.time = Date.now();
 	  this.stats.update();
