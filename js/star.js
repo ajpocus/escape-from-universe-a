@@ -14,7 +14,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
     var vec = edge.geometry.vertices[vecIdx];
     
-    var zSub = 50000;
+    var zSub = 40000;
     var randZ = vec.z - Math.floor(Math.random() * zSub);
     mesh.position.set(vec.x, vec.y, randZ);
     
@@ -45,7 +45,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       }
       
       mesh.lookAt(new THREE.Vector3(0, 0, 0));
-      //mesh.translateZ(50);
+      mesh.translateZ(50);
 	  }
   };
   
