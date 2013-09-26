@@ -106,8 +106,10 @@ define([
 
     var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
     var vec = edge.geometry.vertices[vecIdx];
-    console.log(vec);
-    star.position.set(vec.x, vec.y, vec.z);
+    
+    var zSub = 20000;
+    var randZ = vec.z - Math.floor(Math.random() * zSub);
+    star.position.set(vec.x, vec.y, randZ);
     
     scene.add(star);
     stars.push(star);
@@ -151,7 +153,7 @@ define([
 	    }
 	    
 	    star.lookAt(new THREE.Vector3(0, 0, 0));
-	    star.translateZ(40);
+	    star.translateZ(100);
       
 		}
 		
