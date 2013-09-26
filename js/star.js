@@ -1,6 +1,8 @@
-define(["jquery-2.0.3", "three.min"], function (jquery, three) {
+define([
+  "jquery-2.0.3", "three.min", "universe"
+], function (jquery, three, Universe) {
   function Star(scene) {
-    var edge = scene.edge;
+    var edge = Universe.edge;
     var starMaterial = new THREE.MeshBasicMaterial({ color: 0xcccc00 });
 	  var sizeMin = 80,
 	    sizeMax = 1000;

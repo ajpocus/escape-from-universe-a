@@ -1,133 +1,104 @@
 define([
-  "jquery-2.0.3", "three.min", "stats", "PointerLockControls", "ship", "star"
-], function (jquery, three, stats, PointerLockControls, Ship, Star) {
-  var camera, scene, renderer, controls, stats, ship, edge,
-	  time = Date.now(),
-	  objects = [],
-	  stars = [],
-    frameCount = 0;
+  "jquery-2.0.3", "three.min", "stats", "PointerLockControls"
+], function (jquery, three, stats, PointerLockControls) {
+  var Universe = {
     
-	init();
-	animate();
-
-	function init() {
-		camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 100000 );
-		scene = new THREE.Scene();
-    // scene.fog = new THREE.Fog(0x000000, 5000, 10000);
-    
-    // create a point light
-    var light = new THREE.AmbientLight(0x404040);
-    scene.add(light);
-
-    stats = new Stats();
-    stats.setMode(0); // 0: fps, 1: ms
-    
-    // Align top-left
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
-    
-    document.body.appendChild(stats.domElement);
-    
-
-    // create field of stars
-    var width = window.innerWidth,
-      height = window.innerHeight;
-    
-    makeEdge(); 
-    scene.edge = edge;
-    for (var i = 0; i < 100; i++) {
-      star = new Star(scene);
-      stars.push(star);
-    }
-    ship = new Ship(scene);
-    camera.lookAt(ship);
-	  
-	  controls = new THREE.PointerLockControls(camera);
-	  controls.enabled = true;
-		scene.add(controls.getObject());
-		
-		renderer = new THREE.WebGLRenderer();
-		renderer.setSize(window.innerWidth, window.innerHeight);
-
-		document.body.appendChild(renderer.domElement);
-		window.addEventListener('resize', onWindowResize, false);
-	}
-	
-	function makeEdge() {
-	  var geom = new THREE.SphereGeometry(50000, 50, 50);
-	  var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00, wireframe: true });
-	  edge = new THREE.Mesh(geom, mat);
-	  edge.position.set(0, 0, 0);
-	  scene.add(edge);
-	}
-	
-	function followShip() {
-	  var pos = controls ? controls.getObject().position : camera.position;
-		ship.mesh.position.set(pos.x, pos.y - 50, pos.z - 100);
-	}
-	
-	function makeStar() {
-	  var starMaterial = new THREE.MeshBasicMaterial({ color: 0xcccc00 });
-	  var sizeMin = 80,
-	    sizeMax = 1000;
-    var starRadius = Math.floor(Math.random() * (sizeMax - sizeMin) + sizeMin);
-    var starGeometry = new THREE.SphereGeometry(starRadius, 16, 16);
-    var star = new THREE.Mesh(starGeometry, starMaterial);
-    
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    var pos = controls ? controls.getObject().position : camera.position;
-
-    var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
-    var vec = edge.geometry.vertices[vecIdx];
-    
-    var zSub = 20000;
-    var randZ = vec.z - Math.floor(Math.random() * zSub);
-    star.position.set(vec.x, vec.y, randZ);
-    
-    scene.add(star);
-    
-    return star;
-	}
-
-	function onWindowResize() {
-		camera.aspect = window.innerWidth / window.innerHeight;
-		camera.updateProjectionMatrix();
-		renderer.setSize( window.innerWidth, window.innerHeight );
-	}
-	
-	function animate() {
-		requestAnimationFrame( animate );
-
-		// update field of stars
-    var width = window.innerWidth;
-    var height = window.innerHeight;
-    
-		for (var i = 0; i < stars.length; i++) {
-      var star = stars[i].mesh;
-		  
-		  if (-100 <= star.position.x && star.position.x <= 100 &&
-		      -100 <= star.position.y && star.position.y <= 100 &&
-		      -100 <= star.position.z && star.position.z <= 100) {
-		    scene.remove(stars[i]);
-		    delete stars[i];
-	      stars.splice(i, 1);
-	      star = new Star(scene);
-	      stars.push(star);
-	      star = star.mesh;
-	    }
-	    
-	    star.lookAt(new THREE.Vector3(0, 0, 0));
-	    star.translateZ(100);
+    init: function init() {
+      var angle = 45,
+        aspect = window.innerWidth / window.innerHeight,
+        near = 0.1,
+        far = 100000;
+		  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
+		  this.scene = new THREE.Scene();
+      // scene.fog = new THREE.Fog(0x000000, 5000, 10000);
+      this.time = Date.now();
+      this.stars = [];
       
-		}
+      // create a point light
+      this.light = new THREE.AmbientLight(0x404040);
+      this.scene.add(this.light);
+
+      this.stats = new Stats();
+      this.stats.setMode(0); // 0: fps, 1: ms
+      
+      // Align top-left
+      this.stats.domElement.style.position = 'absolute';
+      this.stats.domElement.style.left = '0px';
+      this.stats.domElement.style.top = '0px';
+      
+      document.body.appendChild(this.stats.domElement);
+      
+      // create field of stars
+      var width = window.innerWidth,
+        height = window.innerHeight;
+      
+      this.makeEdge();
+      
+	    this.controls = new THREE.PointerLockControls(this.camera);
+	    this.controls.enabled = true;
+		  this.scene.add(this.controls.getObject());
 		
-		controls.update( Date.now() - time );
-		followShip();
+		  this.renderer = new THREE.WebGLRenderer();
+		  this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+		  document.body.appendChild(this.renderer.domElement);
+		  window.addEventListener('resize', this.onWindowResize, false);
+	  },
+	
+	  makeEdge: function makeEdge() {
+	    var geom = new THREE.SphereGeometry(50000, 50, 50);
+	    var mat = new THREE.MeshBasicMaterial({ color: 0x00cc00, wireframe: true });
+	    this.edge = new THREE.Mesh(geom, mat);
+	    this.edge.position.set(0, 0, 0);
+	    this.scene.add(this.edge);
+	  },
+	
+	  followShip: function followShip() {
+	    var pos = this.controls ? this.controls.getObject().position : this.camera.position;
+		  ship.mesh.position.set(pos.x, pos.y - 50, pos.z - 100);
+	  },
+	
+	  onWindowResize: function onWindowResize() {
+		  this.camera.aspect = window.innerWidth / window.innerHeight;
+		  this.camera.updateProjectionMatrix();
+		  this.renderer.setSize( window.innerWidth, window.innerHeight );
+	  },
+	
+	  animate: function animate() {
+		  requestAnimationFrame( animate );
+
+		  // update field of stars
+      var width = window.innerWidth;
+      var height = window.innerHeight;
+      
+		  for (var i = 0; i < this.stars.length; i++) {
+        var star = this.stars[i].mesh;
+		    
+		    if (-100 <= star.position.x && star.position.x <= 100 &&
+		        -100 <= star.position.y && star.position.y <= 100 &&
+		        -100 <= star.position.z && star.position.z <= 100) {
+		      scene.remove(this.stars[i]);
+		      delete this.stars[i];
+	        this.stars.splice(i, 1);
+	        star = new Star(scene);
+	        this.stars.push(star);
+	        star = star.mesh;
+	      }
+	      
+	      star.lookAt(new THREE.Vector3(0, 0, 0));
+	      star.translateZ(100);
+        
+		  }
 		
-		renderer.render( scene, camera );
-		time = Date.now();
-		stats.update();
-	}
+		  controls.update( Date.now() - this.time );
+		  followShip();
+		
+		  renderer.render( scene, camera );
+		  this.time = Date.now();
+		  stats.update();
+	  }
+	  
+  };
+  
+  return Universe;
 });
