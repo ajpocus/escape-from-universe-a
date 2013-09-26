@@ -35,7 +35,7 @@ define([
       height = window.innerHeight;
     
     makeEdge(); 
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 100; i++) {
       makeStar();
     }
     makeShip();
@@ -104,11 +104,10 @@ define([
     var height = window.innerHeight;
     var pos = controls ? controls.getObject().position : camera.position;
 
-    var minDim = 0,
-      maxDim = 20000;
-    var dim = Math.floor(Math.random() * (maxDim - minDim) + minDim);
-    dim -= 10000;
-    star.position.set(dim, dim, 50000);
+    var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
+    var vec = edge.geometry.vertices[vecIdx];
+    console.log(vec);
+    star.position.set(vec.x, vec.y, vec.z);
     
     scene.add(star);
     stars.push(star);
