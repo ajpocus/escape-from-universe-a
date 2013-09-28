@@ -56,72 +56,101 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       }
       
       mesh.lookAt(new THREE.Vector3(0, 0, 0));
-      mesh.translateZ(50);
+      mesh.translateZ(150);
 	  }
 	  
 	  Star.checkCollisions(universe);
   };
   
   Star.checkCollisions = function (universe) {
-    var stars = universe.stars;
+    var stars = universe.stars.slice(0);
 
-    for (var i = 0; i < stars.length; i++) {
+    var newStars = [];
+    var positions = [];
+    
+    var i,
+      directions = [
+        new THREE.Vector3(0, 0, 1),
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(1, 0, 0),
+        new THREE.Vector3(0, 1, 1),
+        new THREE.Vector3(1, 1, 0),
+        new THREE.Vector3(1, 1, 1),
+        new THREE.Vector3(0, 0, -1),
+        new THREE.Vector3(0, -1, 0),
+        new THREE.Vector3(-1, 0, 0),
+        new THREE.Vector3(0, -1, -1),
+        new THREE.Vector3(-1, -1, 0),
+        new THREE.Vector3(-1, -1, -1),
+        new THREE.Vector3(0, -1, 1),
+        new THREE.Vector3(0, 1, -1),
+        new THREE.Vector3(-1, 1, 0),
+        new THREE.Vector3(1, -1, 0),
+        new THREE.Vector3(-1, -1, 1),
+        new THREE.Vector3(-1, 1, -1),
+        new THREE.Vector3(1, -1, -1)
+      ];
+    
+    // increase precision
+    var newDirections = [];
+    for (i = 0; i < directions.length; i++) {
+      var dir = directions[i];
+      newDirections.push(new THREE.Vector3(dir.x/2, dir.y/2, dir.z/2));
+    }
+    for (i = 0; i < newDirections.length; i++) { 
+      directions.push(newDirections[i]); 
+    }
+    
+    for (i = 0; i < stars.length; i++) {
+      positions.push(stars[i].mesh.position);
+    }
+    
+    var caster = new THREE.Raycaster();
+    for (i = 0; i < stars.length; i++) {
       var star = stars[i];
       if (!star) { continue; }
       var starMesh = star.mesh;
       
-      for (var j = 0; j < stars.length; j++) {
-        var otherStar = stars[j];
-        if (!otherStar) { continue; }
-        
-        var otherMesh = otherStar.mesh;
-        var range = starMesh.geometry.radius * 2 + otherMesh.geometry.radius * 2;
-        var distance = starMesh.position.distanceTo(otherMesh.position);
-        
-        if (distance <= range) {
-          var biggerStar;
-          if (starMesh.radius >= otherMesh.radius) {
-            biggerStar = star;
-          } else {
-            biggerStar = otherStar;
-            otherStar = star;
-          }
-          
-          var distance2 = Math.pow(distance, 2) || 1;
-          var gravityPower = biggerStar.gravity * 0.001 * distance2;
-
-          var geom, mat,
-            bigGeom = biggerStar.mesh.geometry,
-            smallGeom = otherStar.mesh.geometry;
-          
-          var newBig = new Star(universe, {
-            radius: bigGeom.radius + gravityPower,
-            position: biggerStar.mesh.position
-          });
-          
-          var newSmall = new Star(universe, {
-            radius: smallGeom.radius - gravityPower,
-            position: otherStar.mesh.position
-          });
-          
-          universe.scene.remove(biggerStar);
-          universe.scene.remove(otherStar);
-          
-          delete universe.stars[i];
-          delete universe.stars[j];
-          
-          universe.stars.splice(i, 1);
-          universe.stars.splice(j, 1);
-          universe.stars.push(newBig);
-          universe.stars.push(newSmall);
-          
-          newSmall.mesh.lookAt(newBig.mesh);
-          newSmall.mesh.translateZ(gravityPower);
-        }
+      caster.far = starMesh.radius * 3;
+      
+      for (var j = 0; j < directions.length; j++) {
+        caster.set(star, directions[j]);
+        var intersects = caster.intersectObjects(positions);
+        if (intersects.length > 0) { console.log(intersects); }
       }
     }
     
-  }
+    //universe.stars = newStars;
+    
+  };
+  
+  Star.applyGravity = function (biggerStar, otherStar) {
+    var universe = biggerStar.universe;
+    var distance2 = Math.pow(biggerStar.mesh.position.distanceTo(otherStar.mesh.position), 2);
+    var gravityPower = biggerStar.gravity * 0.001 * distance2;
+
+    var geom, mat,
+      bigGeom = biggerStar.mesh.geometry,
+      smallGeom = otherStar.mesh.geometry;
+    
+    var newBig = new Star(universe, {
+      radius: bigGeom.radius + gravityPower,
+      position: biggerStar.mesh.position
+    });
+    
+    var newSmall = new Star(universe, {
+      radius: smallGeom.radius - gravityPower,
+      position: otherStar.mesh.position
+    });
+    
+    universe.scene.remove(biggerStar);
+    universe.scene.remove(otherStar);
+    
+    newSmall.mesh.lookAt(newBig.mesh);
+    newSmall.mesh.translateZ(gravityPower);
+    
+    return [biggerStar, otherStar];
+  };
   
   return Star;
 });
