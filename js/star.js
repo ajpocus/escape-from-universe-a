@@ -89,7 +89,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     
     var otherScale = otherStar.mesh.scale.x - 0.01;
     if (otherScale < 0.01) {
-      universe.scene.remove(otherStar);
+      universe.scene.remove(otherStar.mesh);
       var idx = universe.stars.indexOf(otherStar);
       delete universe.stars[idx];
       universe.stars.splice(idx, 1);
