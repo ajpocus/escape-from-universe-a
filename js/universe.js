@@ -69,8 +69,6 @@ define([
   Universe.prototype.animate = function animate() {
 	  requestAnimationFrame(this.animate.bind(this));
     
-    // update controls
-    
 	  // update field of stars
 	  Star.updateStars(this);
     

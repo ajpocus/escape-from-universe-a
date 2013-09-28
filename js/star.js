@@ -59,7 +59,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       mesh.translateZ(150);
 	  }
 	  
-	  Star.checkCollisions(universe);
+	  //Star.checkCollisions(universe);
   };
   
   Star.checkCollisions = function (universe) {
