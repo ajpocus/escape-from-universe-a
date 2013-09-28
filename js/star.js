@@ -83,9 +83,11 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var gravityPower = biggerStar.gravity * 0.001 * distance2;
 
     var bigScale = biggerStar.mesh.scale.x + 0.01;
-    biggerStar.mesh.scale.x = bigScale;
-    biggerStar.mesh.scale.y = bigScale;
-    biggerStar.mesh.scale.z = bigScale;
+    if (bigScale < 5) {
+      biggerStar.mesh.scale.x = bigScale;
+      biggerStar.mesh.scale.y = bigScale;
+      biggerStar.mesh.scale.z = bigScale;  
+    }
     
     var otherScale = otherStar.mesh.scale.x - 0.01;
     if (otherScale < 0.01) {
