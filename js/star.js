@@ -40,9 +40,8 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       if (!star) { continue; }
       
 	    var mesh = star.mesh;
-	   
       mesh.lookAt(new THREE.Vector3(0, 0, 0));
-      mesh.translateZ(50);
+      mesh.translateZ(50);  
 	  }
 	  
 	  Star.checkCollisions(universe);
@@ -63,7 +62,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
 
         if (dist <= range) {
           collided = true;
-          console.log(collided);
+
           if (star.mesh.radius >= otherStar.mesh.radius) {
             var biggerStar = star;
           } else {
@@ -83,20 +82,22 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var distance2 = Math.pow(biggerStar.mesh.position.distanceTo(otherStar.mesh.position), 2);
     var gravityPower = biggerStar.gravity * 0.001 * distance2;
 
-    var bigScale = biggerStar.radius + 0.001;
+    var bigScale = biggerStar.mesh.scale.x + 0.01;
     biggerStar.mesh.scale.x = bigScale;
     biggerStar.mesh.scale.y = bigScale;
     biggerStar.mesh.scale.z = bigScale;
     
-    var otherScale = otherStar.radius - 0.001;
-    otherStar.mesh.scale.x = otherScale;
-    otherStar.mesh.scale.y = otherScale;
-    otherStar.mesh.scale.z = otherScale;
-    
-    otherStar.mesh.lookAt(biggerStar.mesh.position);
-    otherStar.mesh.translateZ(gravityPower);
-    
-    return [biggerStar, otherStar];
+    var otherScale = otherStar.mesh.scale.x - 0.01;
+    if (otherScale < 0.01) {
+      universe.scene.remove(otherStar);
+      var idx = universe.stars.indexOf(otherStar);
+      delete universe.stars[idx];
+      universe.stars.splice(idx, 1);
+    } else {
+      otherStar.mesh.scale.x = otherScale;
+      otherStar.mesh.scale.y = otherScale;
+      otherStar.mesh.scale.z = otherScale;
+    }
   };
   
   return Star;
