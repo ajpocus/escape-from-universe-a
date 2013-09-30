@@ -17,16 +17,15 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     
     if (params.position) {
       var pos = params.position;
-      mesh.position.set(pos.x, pos.y, pos.z);
+      this.position = pos;
     } else {
       var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
       var vec = edge.geometry.vertices[vecIdx];
       
-      var zSub = 40000;
-      var randZ = vec.z - Math.floor(Math.random() * zSub);
-      mesh.position.set(vec.x, vec.y, randZ);
+      this.position = { x: vec.x, y: vec.y, z: 100000 };
     }
     
+    mesh.position.set(0, 0, 0);
     universe.scene.add(mesh);
     this.mesh = mesh;
   }
@@ -45,7 +44,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       if (!star) { continue; }
       
 	    var mesh = star.mesh;
-      mesh.lookAt(new THREE.Vector3(0, 0, 0));
+      mesh.lookAt(star.position);
       mesh.translateZ(150);  
 	  }
 	  
@@ -58,8 +57,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     for (var i = 0; i < stars.length; i++) {
       var star = stars[i];
       
-      var distance = star.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0));
-      if (distance <= (star.radius + 5)) {
+      if (star.mesh.position.z >= star.position.z) {
         universe.scene.remove(star.mesh);
         delete universe.stars[i];
         universe.stars.splice(i, 1);

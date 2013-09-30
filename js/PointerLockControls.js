@@ -9,7 +9,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     ship.mesh.rotation.set(0, 0, 0);
     camera.rotation.order = "YXZ";
     ship.mesh.rotation.order = "YXZ";
-    camera.position.z -= 10000;
+    camera.position.z -= 30000;
     
     // initialize movement flags for the update loop
   	var moveUp = false;

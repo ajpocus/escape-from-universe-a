@@ -9,7 +9,7 @@ define([
 	  this.camera = new THREE.PerspectiveCamera(angle, aspect, near, far);
 	  
 	  this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.Fog(0x000000, 48000, 72000);
+    this.scene.fog = new THREE.Fog(0x000000, 72000, 100000);
     this.time = Date.now();
     this.stars = [];
     
