@@ -57,7 +57,6 @@ define([
     this.edge = new THREE.Mesh(geom, mat);
 
     this.scene.add(this.edge);
-    console.log(this.edge);
   };
 
   Universe.prototype.onWindowResize = function onWindowResize() {

@@ -22,7 +22,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
       var vec = edge.geometry.vertices[vecIdx];
       
-      this.position = { x: vec.x, y: vec.y, z: 100000 };
+      this.position = { x: vec.x, y: vec.y, z: vec.z };
     }
     
     mesh.position.set(0, 0, 0);
@@ -45,7 +45,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       
 	    var mesh = star.mesh;
       mesh.lookAt(star.position);
-      mesh.translateZ(150);  
+      mesh.translateZ(350);  
 	  }
 	  
 	  Star.checkCollisions(universe);
