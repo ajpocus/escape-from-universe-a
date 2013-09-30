@@ -35,6 +35,11 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var width = window.innerWidth;
     var height = window.innerHeight;
     
+    if (universe.stars.length < 100) {
+      var star = new Star(universe);
+      universe.stars.push(star);
+    }
+    
 	  for (var i = 0; i < universe.stars.length; i++) {
       var star = universe.stars[i];
       if (!star) { continue; }
@@ -53,26 +58,11 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     for (var i = 0; i < stars.length; i++) {
       var star = stars[i];
       
-      var collided = false;
-      for (var j = i; j < stars.length; j++) {
-        if (i === j) { continue; }
-        var otherStar = stars[j];
-        var range = star.radius + otherStar.radius;
-        var dist = star.mesh.position.distanceTo(otherStar.mesh.position);
-
-        if (dist <= range) {
-          collided = true;
-
-          if (star.mesh.radius >= otherStar.mesh.radius) {
-            var biggerStar = star;
-          } else {
-            var biggerStar = otherStar;
-            otherStar = star;
-          } 
-          
-          Star.applyGravity(biggerStar, otherStar);
-          break;
-        }
+      var distance = star.mesh.position.distanceTo(new THREE.Vector3(0, 0, 0));
+      if (distance <= (star.radius + 5)) {
+        universe.scene.remove(star.mesh);
+        delete universe.stars[i];
+        universe.stars.splice(i, 1);
       }
     }
   };
@@ -82,11 +72,6 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
     var distance2 = Math.pow(biggerStar.mesh.position.distanceTo(otherStar.mesh.position), 2);
     var gravityPower = biggerStar.gravity * 0.001 * distance2;
 
-    if (universe.stars.length <= 100) {
-      var star = new Star(universe);
-      universe.stars.push(star);
-    }
-    
     var bigScale = biggerStar.mesh.scale.x + 0.01;
     if (bigScale < 5) {
       biggerStar.mesh.scale.x = bigScale;
