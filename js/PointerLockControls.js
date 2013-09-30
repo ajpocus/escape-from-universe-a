@@ -113,7 +113,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
   		velocity.y += ( - velocity.y ) * 0.8 * delta;
   
-      var speed = 50.0;
+      var speed = 150.0;
   		if ( moveUp ) velocity.y += speed * delta;
   		if ( moveDown ) velocity.y -= speed * delta;
   

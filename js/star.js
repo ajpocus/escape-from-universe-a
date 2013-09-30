@@ -19,10 +19,21 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       var pos = params.position;
       this.position = pos;
     } else {
-      var vecIdx = Math.floor(Math.random() * edge.geometry.vertices.length);
-      var vec = edge.geometry.vertices[vecIdx];
+      var shipPos = universe.ship.mesh.position;
+      console.log(shipPos);
+      var vec = {};
+      var ax = ['x', 'y', 'z'];
       
-      this.position = { x: vec.x, y: vec.y, z: vec.z };
+      for (var i = 0; i < ax.length; i++) {
+        var dim = ax[i];
+        var min = shipPos[dim] - 100000;
+        var max = shipPos[dim] + 100000;
+        vec[dim] = Math.random() * (max - min) + min;
+      }
+      console.log(vec);
+      var zMax = 50000;
+      
+      this.position = { x: vec.x, y: vec.y, z: zMax };
     }
     
     mesh.position.set(0, 0, 0);
@@ -45,7 +56,7 @@ define(["jquery-2.0.3", "three.min"], function (jquery, three) {
       
 	    var mesh = star.mesh;
       mesh.lookAt(star.position);
-      mesh.translateZ(350);  
+      mesh.translateZ(-350);  
 	  }
 	  
 	  Star.checkCollisions(universe);
