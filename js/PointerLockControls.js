@@ -9,10 +9,11 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
     ship.mesh.rotation.set(0, 0, 0);
     camera.rotation.order = "YXZ";
     ship.mesh.rotation.order = "YXZ";
+    camera.position.z -= 10000;
     
     // initialize movement flags for the update loop
-  	var moveForward = false;
-  	var moveBack = false;
+  	var moveUp = false;
+  	var moveDown = false;
   	var moveLeft = false;
   	var moveRight = false;
   
@@ -45,7 +46,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 38: // up
   			case 87: // w
-  				moveForward = true;
+  				moveUp = true;
   				break;
   
   			case 37: // left
@@ -54,7 +55,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 40: // down
   			case 83: // s
-  				moveBack = true;
+  				moveDown = true;
   				break;
   
   			case 39: // right
@@ -71,7 +72,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 38: // up
   			case 87: // w
-  				moveForward = false;
+  				moveUp = false;
   				break;
   
   			case 37: // left
@@ -81,7 +82,7 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   
   			case 40: // down
   			case 83: // a
-  				moveBack = false;
+  				moveDown = false;
   				break;
   
   			case 39: // right
@@ -106,20 +107,21 @@ define(["jquery-2.0.3.min", "three.min"], function (j$, three) {
   	this.update = function ( delta ) {
   		if ( scope.enabled === false ) return;
   
+      camera.lookAt(new THREE.Vector3(0, 0, 0));
   		delta *= 0.1;
   
   		velocity.x += ( - velocity.x ) * 0.8 * delta;
-  		velocity.z += ( - velocity.z ) * 0.8 * delta;
+  		velocity.y += ( - velocity.y ) * 0.8 * delta;
   
       var speed = 50.0;
-  		if ( moveForward ) velocity.z -= speed * delta;
-  		if ( moveBack ) velocity.z += speed * delta;
+  		if ( moveUp ) velocity.y += speed * delta;
+  		if ( moveDown ) velocity.y -= speed * delta;
   
   		if ( moveLeft ) velocity.x -= speed * delta;
   		if ( moveRight ) velocity.x += speed * delta;
 
       camera.translateX(velocity.x);		
-  		camera.translateZ(velocity.z);
+  		camera.translateY(velocity.y);
   	};
   
   };
